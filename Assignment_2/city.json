@@ -1,0 +1,46 @@
+{
+    "cities": [
+      {
+        "id": 1,
+        "name": "Ahmedabad",
+        "district": "Ahmedabad"
+      },
+      {
+        "id": 2,
+        "name": "Surat",
+        "district": "Surat"
+      },
+      {
+        "id": 3,
+        "name": "Vadodara",
+        "district": "Vadodara"
+      },
+      {
+        "id": 4,
+        "name": "Rajkot",
+        "district": "Rajkot"
+      },
+      {
+        "id": 5,
+        "name": "Bhavnagar",
+        "district": "Bhavnagar"
+      },
+      {
+        "id": 6,
+        "name": "Jamnagar",
+        "district": "Jamnagar"
+      },
+      {
+        "id": 7,
+        "name": "Junagadh",
+        "district": "Junagadh"
+      },
+      {
+        "id": 8,
+        "name": "Gandhinagar",
+        "district": "Gandhinagar"
+      }
+      
+    ]
+  }
+  

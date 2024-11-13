@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>que_1</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .box {
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input, select {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #6162b0;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #5956ce;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: none;
+        }
+
+        #togglePara {
+            background-color: #d1d1f3;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="que1" class="box">
+            <form id="myForm">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name">
+                <span class="error" id="nameError">Please enter your name.</span>
+
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email">
+                <span class="error" id="emailError">Please enter a valid email address.</span>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+
+        <div id="que2" class="box">
+            <label for="states">Select State :</label>
+            <select id="states">
+                <option value="">--Select state--</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Maharashtra">Maharashtra</option>
+            </select><br>
+
+            <label for="cities">Select City :</label>
+            <select id="cities">
+                <option value="">--Select city--</option>
+            </select>
+        </div>
+
+        <div id="que3" class="box">
+            <div id="togglePara">Toggle visibility of this div</div>
+            <button id="toggle">Toggle</button>
+        </div>
+
+        <div id="que4" class="box">
+            <img src="./photos/flowers.jpg" id="photo" alt="Gallery Image">
+            <div>
+                <button id="prev">Prev</button>
+                <button id="next">Next</button>
+            </div>
+        </div>
+
+        <div id="que5" class="box">
+            <form id="form2">
+                <label for="name2">Name</label>
+                <input type="text" id="name2" name="name">
+                <span class="error" id="nameError2">Please enter your name.</span>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // que_1
+            $('#myForm').on('submit', function (event) {
+                event.preventDefault();
+
+                let isValid = true;
+                let name = $('#name').val().trim();
+                let email = $('#email').val().trim();
+
+                if (name === "") {
+                    $('#nameError').show();
+                    isValid = false;
+                } else {
+                    $('#nameError').hide();
+                }
+
+                if (email === "" || !validateEmail(email)) {
+                    $('#emailError').show();
+                    isValid = false;
+                } else {
+                    $('#emailError').hide();
+                }
+
+                if (isValid) {
+                    alert("Name: " + name + "\nEmail: " + email);
+                }
+            });
+
+            function validateEmail(email) {
+                let re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            // que_2
+            const data = {
+                Gujarat: ["Surat", "Amreli", "Rajkot"],
+                Maharashtra: ["Mumbai", "Pune"]
+            };
+
+            $("#states").change(function () {
+                const state = $(this).val();
+                $("#cities").html("<option>--select city--</option>");
+
+                if (state && data[state]) {
+                    data[state].forEach(city => {
+                        let option = $('<option>', { text: city, value: city });
+                        $("#cities").append(option);
+                    });
+                }
+            });
+
+            // que_3
+            $("#toggle").click(function () {
+                $("#togglePara").toggle();
+            });
+
+            // que_4
+            const images = ["./photos/flowers.jpg", "./photos/nature.jpg", "./photos/tree.jpg"];
+            let index = 0;
+            $("#prev").click(function () {
+                index--;
+                if (index < 0) {
+                    index = images.length - 1;
+                }
+                document.getElementById("photo").src = images[index];
+            });
+
+            $("#next").click(function () {
+                index++;
+                if (index >= images.length) {
+                    index = 0;
+                }
+                document.getElementById("photo").src = images[index];
+            });
+
+            // que_5
+            $("#form2").on("submit", function (event) {
+                event.preventDefault();
+                if ($("#name2").val() == "") {
+                    $("#nameError2").show();
+                }
+                else {
+                    $("#nameError2").hide();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

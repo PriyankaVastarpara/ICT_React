@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+    <style>
+        .autocomplete-suggestions {
+            border: 1px solid #ccc;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #fff;
+            position: absolute;
+            width: 100%;
+            z-index: 9999;
+            display: none;
+        }
+        .autocomplete-suggestions div {
+            padding: 8px;
+            cursor: pointer;
+        }
+        .autocomplete-suggestions div:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="container">
+    <h1>Search City</h1>
+    <input type="text" id="searchBox" placeholder="Type to search..." autocomplete="off">
+    <div id="suggestions" class="autocomplete-suggestions"></div>
+</div>
+    <script>
+        $("#searchBox").on("input", function() {
+            let query = $(this).val();
+            if (query.length > 2) {
+                $.ajax({
+                    url: "city.json",
+                    type: "GET",
+                    success: function(response) {
+                        let cities = response.cities;
+                        let filteredResults = cities.filter(city => city.name.toLowerCase().includes(query.toLowerCase()));
+                        $("#suggestions").empty();
+                        if (filteredResults.length > 0) {
+                            filteredResults.forEach(function(city) {
+                                $('#suggestions').append('<div class="suggestion-item">' + city.name + '</div>');
+                            });
+                            $('#suggestions').show();
+                        } else {
+                            $('#suggestions').append('<div>No results found</div>');
+                            $('#suggestions').show();
+                        }
+                    },
+                    error: function() {
+                        $('#suggestions').empty().append('<div>Error fetching results</div>');
+                        $('#suggestions').show();
+                    }
+                });
+            } else {
+                $('#suggestions').empty().hide();
+            }
+        });
+
+        $(document).on('click', '.suggestion-item',function(){
+            $("#searchBox").val($(this).text());
+            $("#suggestions").hide();
+        });
+
+        $(document).click(function(e){
+            if (!$(e.target).closest('#suggestions').length) {
+            $('#suggestions').empty();
+            $("#suggestions").hide();
+        }
+        });
+
+    </script>
+</body>
+</html>

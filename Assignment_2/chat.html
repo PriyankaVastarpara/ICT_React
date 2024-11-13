@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Chat</title>
+    <style>
+        .chat-box {
+            width: 400px;
+            height: 500px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .message.sent {
+            background-color: #e1ffc7; 
+            text-align: right;
+        }
+        .message.received {
+            background-color: #d1e7ff;
+            text-align: left;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Real-time Chat</h1>
+    <div id="chat-box" class="chat-box"></div>
+    <input type="text" id="message-input" class="chat-input" placeholder="Type message...">
+    <button id="send-btn">Send</button>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    
+    function simulateReceivedMessage() {
+        const randomMessages = [
+            "Hey, how's it going?",
+            "What's up?",
+            "Did you finish the project?",
+            "Let's meet up later!",
+            "I'm on my way!",
+            "See you soon!"
+        ];
+        const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+        let time = new Date().toLocaleTimeString();
+        messages.push({ type: 'received', text: randomMessage, time: time });  
+        localStorage.setItem('chatMessages', JSON.stringify(messages)); 
+        loadMessages();  
+    }
+
+    function loadMessages() {
+        let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+        $('#chat-box').empty();
+        messages.forEach(function(message) {
+            let messageClass = message.type === 'sent' ? 'message sent' : 'message received';
+            $('#chat-box').append('<div class="' + messageClass + '">' + message.time + ' - ' + message.text + '</div>');
+        });
+        $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight); 
+    }
+
+    $('#send-btn').click(function() {
+        let message = $('#message-input').val().trim();
+        if (message !== '') {
+            let messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            let time = new Date().toLocaleTimeString();
+            messages.push({ type: 'sent', text: message, time: time });  
+            
+            localStorage.setItem('chatMessages', JSON.stringify(messages));  
+            $('#message-input').val('');  
+            loadMessages();  
+            setTimeout(simulateReceivedMessage, 2000);
+        }
+    });
+    loadMessages();
+    setInterval(loadMessages, 1000);
+});
+</script>
+
+</body>
+</html>

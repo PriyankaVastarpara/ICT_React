@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .weather-container {
+      width: 400px;
+      padding: 30px;
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      width: 75%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background-color: #f0f0f0;
+      font-size: 16px;
+    }
+
+    .search-bar button {
+      padding: 10px 15px;
+      background-color: #696cff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .weather-info h2 {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .weather-info p {
+      font-size: 18px;
+      margin: 5px 0;
+      font-weight: 500;
+    }
+
+    .weather-info img {
+      width: 150px;
+      height:150px;
+      margin-top: 10px;
+    }
+
+    .weather-details {
+      margin-top: 20px;
+    }
+
+    .weather-details span {
+      display: block;
+      margin: 10px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="weather-container">
+  <div class="search-bar">
+    <input type="text" id="city" placeholder="Enter city">
+    <button id="get-weather-btn">Get Weather</button>
+  </div>
+
+  <div class="weather-info" id="weather-info">
+ 
+  </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    const apiKey = '32e9d4f12feee6d2dba81dbaeb088613'; 
+
+
+    function fetchWeather(city) {
+      $.ajax({
+        url: `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`,
+        type: 'GET',
+        success: function(data) {
+          displayWeather(data);
+        },
+        error: function() {
+          $('#weather-info').html('<p style="color:red;">Invalid city. Please try again.</p>');
+        }
+      });
+    }
+
+    
+    function displayWeather(data) {
+      const city = data.name;
+      const temperature = data.main.temp;
+      const weatherDescription = data.weather[0].description;
+      const weatherIcon = data.weather[0].icon;
+      const humidity = data.main.humidity;
+      const windSpeed = (data.wind.speed * 3.6).toFixed(2); 
+      const visibility = (data.visibility / 1000).toFixed(2);
+
+      $('#weather-info').html(`
+        <h2>${city}</h2>
+        <p><strong>${temperature}</strong><sup>°C</sup>, ${weatherDescription}</p>
+        <img src="https://openweathermap.org/img/wn/${weatherIcon}@2x.png" alt="${weatherDescription}">
+        <div class="weather-details">
+          <span><strong>Humidity:</strong> ${humidity}%</span>
+          <span><strong>Wind Speed:</strong> ${windSpeed} km/h</span>
+          <span><strong>Visibility:</strong> ${visibility} km</span>
+        </div>
+      `);
+    }
+
+    $('#get-weather-btn').click(function() {
+      const city = $('#city').val();
+      if (city !== "") {
+        fetchWeather(city);
+      } else {
+        alert('Please enter a city name');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

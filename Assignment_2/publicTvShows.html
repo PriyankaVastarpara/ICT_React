@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TV Show Finder</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .search {
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        padding: 10px;
+        width: 250px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .show-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .show-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 200px;
+        margin: 10px;
+        padding: 15px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .show-card img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+      }
+
+      .show-card h3 {
+        font-size: 18px;
+        margin: 10px 0 5px;
+      }
+
+      .show-card p {
+        font-size: 14px;
+        color: #555;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Search for TV Shows</h1>
+      <div class="search">
+        <input type="text" id="show-title" placeholder="Enter TV show title" />
+        <button onclick="searchShows()">Search</button>
+      </div>
+      <div id="show-results" class="show-box"></div>
+    </div>
+
+    <script>
+      function searchShows() {
+        const showTitle = document.getElementById("show-title").value;
+        const apiUrl = `https://api.tvmaze.com/search/shows?q=${showTitle}`;
+
+    
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", apiUrl, true);
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            displayShows(data);
+          } else {
+            console.error("Error fetching data");
+          }
+        };
+        xhr.send();
+      }
+
+      function displayShows(shows) {
+        const showResults = document.getElementById("show-results");
+        showResults.innerHTML = ""; 
+
+        if (shows.length === 0) {
+          showResults.innerHTML = "<p>No shows found</p>";
+          return;
+        }
+
+        shows.forEach((result) => {
+          const show = result.show;
+          const showCard = document.createElement("div");
+          showCard.classList.add("show-card");
+
+          const coverUrl = show.image
+            ? show.image.medium
+            : "https://via.placeholder.com/210x295?text=No+Image";
+
+          showCard.innerHTML = `
+            <img src="${coverUrl}" alt="${show.name}">
+            <h3>${show.name}</h3>
+            <p><strong>Genre:</strong> ${show.genres.join(", ") || "Unknown"}</p>
+            <p><strong>Premiered:</strong> ${show.premiered || "Unknown"}</p>
+            <p><strong>Rating:</strong> ${show.rating.average || "N/A"}</p>
+          `;
+
+          showResults.appendChild(showCard);
+        });
+      }
+    </script>
+  </body>
+</html>
